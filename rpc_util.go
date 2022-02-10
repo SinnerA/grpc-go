@@ -606,30 +606,31 @@ func encode(c baseCodec, msg interface{}) ([]byte, error) {
 //
 // TODO(dfawley): eliminate cp parameter by wrapping Compressor in an encoding.Compressor.
 func compress(in []byte, cp Compressor, compressor encoding.Compressor) ([]byte, error) {
-	if compressor == nil && cp == nil {
-		return nil, nil
-	}
-	wrapErr := func(err error) error {
-		return status.Errorf(codes.Internal, "grpc: error while compressing: %v", err.Error())
-	}
-	cbuf := &bytes.Buffer{}
-	if compressor != nil {
-		z, err := compressor.Compress(cbuf)
-		if err != nil {
-			return nil, wrapErr(err)
-		}
-		if _, err := z.Write(in); err != nil {
-			return nil, wrapErr(err)
-		}
-		if err := z.Close(); err != nil {
-			return nil, wrapErr(err)
-		}
-	} else {
-		if err := cp.Do(cbuf, in); err != nil {
-			return nil, wrapErr(err)
-		}
-	}
-	return cbuf.Bytes(), nil
+	return nil, nil
+	//if compressor == nil && cp == nil {
+	//	return nil, nil
+	//}
+	//wrapErr := func(err error) error {
+	//	return status.Errorf(codes.Internal, "grpc: error while compressing: %v", err.Error())
+	//}
+	//cbuf := &bytes.Buffer{}
+	//if compressor != nil {
+	//	z, err := compressor.Compress(cbuf)
+	//	if err != nil {
+	//		return nil, wrapErr(err)
+	//	}
+	//	if _, err := z.Write(in); err != nil {
+	//		return nil, wrapErr(err)
+	//	}
+	//	if err := z.Close(); err != nil {
+	//		return nil, wrapErr(err)
+	//	}
+	//} else {
+	//	if err := cp.Do(cbuf, in); err != nil {
+	//		return nil, wrapErr(err)
+	//	}
+	//}
+	//return cbuf.Bytes(), nil
 }
 
 const (

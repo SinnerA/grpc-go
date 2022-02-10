@@ -30,6 +30,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 	"unicode/utf8"
 
@@ -41,6 +42,66 @@ import (
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
 )
+
+var (
+	flushCnt                    int64
+	runFlushCnt                 int64
+	writeFlushCnt               int64
+	getBufferCnt                int64
+	emptyCnt                    int64
+	noQuotaCnt                  int64
+	noActiveStreamCnt           int64
+	enqueueCnt                  int64
+	incomingWindowUpdateHandler int64
+	enterPreprocessData         int64
+	preprocessData              int64
+	applySettings               int64
+	processData1                int64
+	processData2                int64
+	finishCnt                   int64
+	getItemCnt                  int64
+	consumerWaitingCnt          int64
+	wakeUpCnt int64
+
+	incomingWindowUpdateFrameCnt      int64
+	outgoingWindowUpdateFrameCnt      int64
+	incomingSettingsFrameCnt          int64
+	outgoingSettingsFrameCnt          int64
+	headerFrameFrameCnt               int64
+	registerStreamFrameCnt            int64
+	cleanupStreamFrameCnt             int64
+	incomingGoAwayFrameCnt            int64
+	dataFrameFrameCnt                 int64
+	pingFrameCnt                      int64
+	goAwayFrameCnt                    int64
+	outFlowControlSizeRequestFrameCnt int64
+
+	EnterSendMsg int64
+	NewStreamCnt int64
+)
+
+//func init() {
+//	go printFlushCnt()
+//}
+//
+//func printFlushCnt() {
+//	t := time.NewTicker(5 * time.Second)
+//	for {
+//		select {
+//		case <-t.C:
+//			println(fmt.Sprintf("enqueueCnt=%d, noActiveStreamCnt=%d, preprocessData=%d, getItemCnt=%d, consumerWaitingCnt=%d, wakeUpCnt=%d",
+//				atomic.LoadInt64(&enqueueCnt), atomic.LoadInt64(&noActiveStreamCnt),
+//				atomic.LoadInt64(&preprocessData), atomic.LoadInt64(&getItemCnt), atomic.LoadInt64(&consumerWaitingCnt), atomic.LoadInt64(&wakeUpCnt)))
+//
+//			//println(fmt.Sprintf("incomingWindowUpdateFrameCnt=%d, outgoingWindowUpdateFrameCnt=%d, incomingSettingsFrameCnt=%d, outgoingSettingsFrameCnt=%d, headerFrameFrameCnt=%d, registerStreamFrameCnt=%d, "+
+//			//	"cleanupStreamFrameCnt=%d, incomingGoAwayFrameCnt=%d, dataFrameFrameCnt=%d, pingFrameCnt=%d, goAwayFrameCnt=%d, outFlowControlSizeRequestFrameCnt=%d",
+//			//	atomic.LoadInt64(&incomingWindowUpdateFrameCnt), atomic.LoadInt64(&outgoingWindowUpdateFrameCnt), atomic.LoadInt64(&incomingSettingsFrameCnt), atomic.LoadInt64(&outgoingSettingsFrameCnt), atomic.LoadInt64(&headerFrameFrameCnt), atomic.LoadInt64(&registerStreamFrameCnt),
+//			//	atomic.LoadInt64(&cleanupStreamFrameCnt), atomic.LoadInt64(&incomingGoAwayFrameCnt), atomic.LoadInt64(&dataFrameFrameCnt), atomic.LoadInt64(&pingFrameCnt), atomic.LoadInt64(&goAwayFrameCnt), atomic.LoadInt64(&outFlowControlSizeRequestFrameCnt)))
+//
+//			//println(fmt.Sprintf("NewStreamCnt=%d", atomic.LoadInt64(&NewStreamCnt)))
+//		}
+//	}
+//}
 
 const (
 	// http2MaxFrameLen specifies the max length of a HTTP2 frame.
@@ -347,6 +408,7 @@ func (w *bufWriter) Write(b []byte) (n int, err error) {
 		w.offset += nn
 		n += nn
 		if w.offset >= w.batchSize {
+			atomic.AddInt64(&writeFlushCnt, 1)
 			err = w.Flush()
 		}
 	}
@@ -354,6 +416,7 @@ func (w *bufWriter) Write(b []byte) (n int, err error) {
 }
 
 func (w *bufWriter) Flush() error {
+	atomic.AddInt64(&flushCnt, 1)
 	if w.err != nil {
 		return w.err
 	}
