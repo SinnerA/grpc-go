@@ -99,6 +99,8 @@ func printFlushCnt() {
 			//	atomic.LoadInt64(&cleanupStreamFrameCnt), atomic.LoadInt64(&incomingGoAwayFrameCnt), atomic.LoadInt64(&dataFrameFrameCnt), atomic.LoadInt64(&pingFrameCnt), atomic.LoadInt64(&goAwayFrameCnt), atomic.LoadInt64(&outFlowControlSizeRequestFrameCnt)))
 
 			//println(fmt.Sprintf("NewStreamCnt=%d", atomic.LoadInt64(&NewStreamCnt)))
+
+			println(fmt.Sprintf("flushCnt=%d, runFlushCnt=%d, writeFlushCnt=%d", atomic.LoadInt64(&flushCnt), atomic.LoadInt64(&runFlushCnt), atomic.LoadInt64(&writeFlushCnt)))
 		}
 	}
 }
