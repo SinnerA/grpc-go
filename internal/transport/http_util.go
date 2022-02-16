@@ -80,28 +80,28 @@ var (
 	NewStreamCnt int64
 )
 
-//func init() {
-//	go printFlushCnt()
-//}
-//
-//func printFlushCnt() {
-//	t := time.NewTicker(5 * time.Second)
-//	for {
-//		select {
-//		case <-t.C:
-//			println(fmt.Sprintf("enqueueCnt=%d, noActiveStreamCnt=%d, preprocessData=%d, getItemCnt=%d, consumerWaitingCnt=%d, wakeUpCnt=%d",
-//				atomic.LoadInt64(&enqueueCnt), atomic.LoadInt64(&noActiveStreamCnt),
-//				atomic.LoadInt64(&preprocessData), atomic.LoadInt64(&getItemCnt), atomic.LoadInt64(&consumerWaitingCnt), atomic.LoadInt64(&wakeUpCnt)))
-//
-//			//println(fmt.Sprintf("incomingWindowUpdateFrameCnt=%d, outgoingWindowUpdateFrameCnt=%d, incomingSettingsFrameCnt=%d, outgoingSettingsFrameCnt=%d, headerFrameFrameCnt=%d, registerStreamFrameCnt=%d, "+
-//			//	"cleanupStreamFrameCnt=%d, incomingGoAwayFrameCnt=%d, dataFrameFrameCnt=%d, pingFrameCnt=%d, goAwayFrameCnt=%d, outFlowControlSizeRequestFrameCnt=%d",
-//			//	atomic.LoadInt64(&incomingWindowUpdateFrameCnt), atomic.LoadInt64(&outgoingWindowUpdateFrameCnt), atomic.LoadInt64(&incomingSettingsFrameCnt), atomic.LoadInt64(&outgoingSettingsFrameCnt), atomic.LoadInt64(&headerFrameFrameCnt), atomic.LoadInt64(&registerStreamFrameCnt),
-//			//	atomic.LoadInt64(&cleanupStreamFrameCnt), atomic.LoadInt64(&incomingGoAwayFrameCnt), atomic.LoadInt64(&dataFrameFrameCnt), atomic.LoadInt64(&pingFrameCnt), atomic.LoadInt64(&goAwayFrameCnt), atomic.LoadInt64(&outFlowControlSizeRequestFrameCnt)))
-//
-//			//println(fmt.Sprintf("NewStreamCnt=%d", atomic.LoadInt64(&NewStreamCnt)))
-//		}
-//	}
-//}
+func init() {
+	go printFlushCnt()
+}
+
+func printFlushCnt() {
+	t := time.NewTicker(5 * time.Second)
+	for {
+		select {
+		case <-t.C:
+			println(fmt.Sprintf("enqueueCnt=%d, noActiveStreamCnt=%d, preprocessData=%d, getItemCnt=%d, consumerWaitingCnt=%d, wakeUpCnt=%d",
+				atomic.LoadInt64(&enqueueCnt), atomic.LoadInt64(&noActiveStreamCnt),
+				atomic.LoadInt64(&preprocessData), atomic.LoadInt64(&getItemCnt), atomic.LoadInt64(&consumerWaitingCnt), atomic.LoadInt64(&wakeUpCnt)))
+
+			//println(fmt.Sprintf("incomingWindowUpdateFrameCnt=%d, outgoingWindowUpdateFrameCnt=%d, incomingSettingsFrameCnt=%d, outgoingSettingsFrameCnt=%d, headerFrameFrameCnt=%d, registerStreamFrameCnt=%d, "+
+			//	"cleanupStreamFrameCnt=%d, incomingGoAwayFrameCnt=%d, dataFrameFrameCnt=%d, pingFrameCnt=%d, goAwayFrameCnt=%d, outFlowControlSizeRequestFrameCnt=%d",
+			//	atomic.LoadInt64(&incomingWindowUpdateFrameCnt), atomic.LoadInt64(&outgoingWindowUpdateFrameCnt), atomic.LoadInt64(&incomingSettingsFrameCnt), atomic.LoadInt64(&outgoingSettingsFrameCnt), atomic.LoadInt64(&headerFrameFrameCnt), atomic.LoadInt64(&registerStreamFrameCnt),
+			//	atomic.LoadInt64(&cleanupStreamFrameCnt), atomic.LoadInt64(&incomingGoAwayFrameCnt), atomic.LoadInt64(&dataFrameFrameCnt), atomic.LoadInt64(&pingFrameCnt), atomic.LoadInt64(&goAwayFrameCnt), atomic.LoadInt64(&outFlowControlSizeRequestFrameCnt)))
+
+			//println(fmt.Sprintf("NewStreamCnt=%d", atomic.LoadInt64(&NewStreamCnt)))
+		}
+	}
+}
 
 const (
 	// http2MaxFrameLen specifies the max length of a HTTP2 frame.
